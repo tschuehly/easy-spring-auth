@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/sakura.css" type="text/css">
     <script src="/htmx_1.9.11.js"></script>
     <script src="/htmx_debug.js"></script>
-    <script src="http://localhost:35729"></script>
+    <script src="http://localhost:35729/livereload.js"></script>
 </head>
 <body hx-ext="debug">
 <nav>

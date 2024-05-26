@@ -1,6 +1,7 @@
 package de.tschuehly.easy.spring.auth.user;
 
 import de.tschuehly.easy.spring.auth.user.management.UserManagementComponent;
+import de.tschuehly.easy.spring.auth.user.management.edit.EditUserComponent;
 import de.tschuehly.spring.viewcomponent.jte.ViewContext;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
@@ -17,10 +18,12 @@ public class UserController {
 
   private final UserService userService;
   private final UserManagementComponent userManagementComponent;
+  private final EditUserComponent editUserComponent;
 
-  public UserController(UserService userService, UserManagementComponent userManagementComponent) {
+  public UserController(UserService userService, UserManagementComponent userManagementComponent, EditUserComponent editUserComponent) {
     this.userService = userService;
     this.userManagementComponent = userManagementComponent;
+      this.editUserComponent = editUserComponent;
   }
 
   @GetMapping("/")
@@ -30,15 +33,10 @@ public class UserController {
 
   public static final String GET_EDIT_USER_MODAL = "/save-user/modal/{uuid}";
 
-  public record UserForm(String uuid, String username, String password) {
-
-  }
 
   @GetMapping(GET_EDIT_USER_MODAL)
-  public String editUserModal(Model model, @PathVariable UUID uuid) {
-    var user = userService.findById(uuid);
-    model.addAttribute("userForm", new UserForm(user.uuid.toString(), user.username, user.password));
-    return "EditUserForm";
+  public ViewContext editUserModal(@PathVariable UUID uuid) {
+    return editUserComponent.render(uuid);
   }
 
   public static final String POST_SAVE_USER = "/save-user";
