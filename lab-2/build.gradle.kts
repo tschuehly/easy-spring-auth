@@ -33,6 +33,10 @@ dependencies {
     implementation("gg.jte:jte-spring-boot-starter-3:3.1.12")
     implementation("gg.jte:jte:3.1.12")
 
+    implementation("de.tschuehly:spring-view-component-jte:0.7.5-SNAPSHOT")
+    annotationProcessor("de.tschuehly:spring-view-component-core:0.7.5-SNAPSHOT")
+    implementation("io.github.wimdeblauwe:htmx-spring-boot:3.3.0")
+
     // LAB 9:
     implementation("io.projectreactor:reactor-core:3.6.5")
 

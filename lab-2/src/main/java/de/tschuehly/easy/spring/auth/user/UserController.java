@@ -1,5 +1,7 @@
 package de.tschuehly.easy.spring.auth.user;
 
+import de.tschuehly.easy.spring.auth.user.management.UserManagementComponent;
+import de.tschuehly.spring.viewcomponent.jte.ViewContext;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 import org.springframework.stereotype.Controller;
@@ -14,15 +16,16 @@ public class UserController {
   public static final String USER_TABLE_BODY_ID = "userTableBody";
 
   private final UserService userService;
+  private final UserManagementComponent userManagementComponent;
 
-  public UserController(UserService userService) {
+  public UserController(UserService userService, UserManagementComponent userManagementComponent) {
     this.userService = userService;
+    this.userManagementComponent = userManagementComponent;
   }
 
   @GetMapping("/")
-  public String index(Model model) {
-    model.addAttribute("easyUserList", userService.findAll());
-    return "UserManagement";
+  public ViewContext index() {
+    return userManagementComponent.render();
   }
 
   public static final String GET_EDIT_USER_MODAL = "/save-user/modal/{uuid}";
