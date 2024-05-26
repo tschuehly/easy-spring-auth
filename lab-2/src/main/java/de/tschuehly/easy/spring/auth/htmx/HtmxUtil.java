@@ -2,6 +2,8 @@ package de.tschuehly.easy.spring.auth.htmx;
 
 //import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponseHeader;
 //import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxSwapType;
+import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponseHeader;
+import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxSwapType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
@@ -12,6 +14,18 @@ import org.springframework.web.util.UriTemplate;
 public class HtmxUtil {
   public static String target(String id){
     return "#" + id;
+  }
+
+  public static void retarget(String cssSelector) {
+    setHeader(HtmxResponseHeader.HX_RETARGET.getValue(), cssSelector);
+  }
+
+  public static void reswap(HxSwapType hxSwapType){
+    setHeader(HtmxResponseHeader.HX_RESWAP.getValue(), hxSwapType.getValue());
+  }
+
+  public static void trigger(String event) {
+    setHeader(HtmxResponseHeader.HX_TRIGGER.getValue(), event);
   }
 
   public static String URI(String uriTemplate, Object... variables) {

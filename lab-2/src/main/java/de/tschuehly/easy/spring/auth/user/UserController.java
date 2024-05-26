@@ -2,6 +2,7 @@ package de.tschuehly.easy.spring.auth.user;
 
 import de.tschuehly.easy.spring.auth.user.management.UserManagementComponent;
 import de.tschuehly.easy.spring.auth.user.management.edit.EditUserComponent;
+import de.tschuehly.easy.spring.auth.user.management.table.row.UserRowComponent;
 import de.tschuehly.spring.viewcomponent.jte.ViewContext;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import static de.tschuehly.easy.spring.auth.user.management.UserManagementComponent.CLOSE_MODAL_EVENT;
+
 @Controller
 public class UserController {
   public static final String MODAL_CONTAINER_ID = "modalContainer";
@@ -19,11 +22,13 @@ public class UserController {
   private final UserService userService;
   private final UserManagementComponent userManagementComponent;
   private final EditUserComponent editUserComponent;
+  private final UserRowComponent userRowComponent;
 
-  public UserController(UserService userService, UserManagementComponent userManagementComponent, EditUserComponent editUserComponent) {
+  public UserController(UserService userService, UserManagementComponent userManagementComponent, EditUserComponent editUserComponent, UserRowComponent userRowComponent) {
     this.userService = userService;
     this.userManagementComponent = userManagementComponent;
       this.editUserComponent = editUserComponent;
+      this.userRowComponent = userRowComponent;
   }
 
   @GetMapping("/")
@@ -40,16 +45,11 @@ public class UserController {
   }
 
   public static final String POST_SAVE_USER = "/save-user";
-  public static final String CLOSE_MODAL_EVENT = "close-modal";
 
   @PostMapping(POST_SAVE_USER)
-  public String saveUser(UUID uuid, String username, String password, Model model, HttpServletResponse response) {
+  public ViewContext saveUser(UUID uuid, String username, String password) {
     EasyUser user = userService.saveUser(uuid, username, password);
-    model.addAttribute("easyUser", user);
-    response.addHeader("HX-Retarget", "#user-" + user.uuid);
-    response.addHeader("HX-Reswap", "outerHTML");
-    response.addHeader("HX-Trigger", CLOSE_MODAL_EVENT);
-    return "UserRow";
+    return userRowComponent.rerender(user);
   }
 
 
