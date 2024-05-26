@@ -1,6 +1,7 @@
 package de.tschuehly.easy.spring.auth.user;
 
 import de.tschuehly.easy.spring.auth.user.management.UserManagementComponent;
+import de.tschuehly.easy.spring.auth.user.management.create.CreateUserComponent;
 import de.tschuehly.easy.spring.auth.user.management.edit.EditUserComponent;
 import de.tschuehly.easy.spring.auth.user.management.table.row.UserRowComponent;
 import de.tschuehly.spring.viewcomponent.jte.ViewContext;
@@ -23,12 +24,14 @@ public class UserController {
   private final UserManagementComponent userManagementComponent;
   private final EditUserComponent editUserComponent;
   private final UserRowComponent userRowComponent;
+  private final CreateUserComponent createUserComponent;
 
-  public UserController(UserService userService, UserManagementComponent userManagementComponent, EditUserComponent editUserComponent, UserRowComponent userRowComponent) {
+  public UserController(UserService userService, UserManagementComponent userManagementComponent, EditUserComponent editUserComponent, UserRowComponent userRowComponent, CreateUserComponent createUserComponent) {
     this.userService = userService;
     this.userManagementComponent = userManagementComponent;
       this.editUserComponent = editUserComponent;
       this.userRowComponent = userRowComponent;
+      this.createUserComponent = createUserComponent;
   }
 
   @GetMapping("/")
@@ -56,22 +59,17 @@ public class UserController {
   public static final String GET_CREATE_USER_MODAL = "/create-user/modal";
 
   @GetMapping(GET_CREATE_USER_MODAL)
-  public String getCreateUserModal() {
-    return "CreateUserForm";
+  public ViewContext getCreateUserModal() {
+    return createUserComponent.render();
   }
-
 
   public static final String POST_CREATE_USER = "/create-user";
 
   @PostMapping(POST_CREATE_USER)
-  public String createUser(String username, String password, Model model, HttpServletResponse response) {
+  public ViewContext createUser(String username, String password) {
     EasyUser user = userService.createUser(username, password);
-    model.addAttribute("easyUser", user);
-
-    response.addHeader("HX-Retarget", "#" + USER_TABLE_BODY_ID);
-    response.addHeader("HX-Reswap", "afterbegin");
-    response.addHeader("HX-Trigger", CLOSE_MODAL_EVENT);
-    return "UserRow";
+    return userRowComponent.renderNewRow(user);
   }
+
 
 }
